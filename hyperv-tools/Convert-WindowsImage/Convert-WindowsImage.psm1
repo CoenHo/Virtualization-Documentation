@@ -959,7 +959,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                                 return
                             }
                             else {
-                                $tempOpenWim.Images | % { $cmbSkuList.Items.Add($_.ImageFlags) }
+                                $tempOpenWim.Images | ForEach-Object { $cmbSkuList.Items.Add($_.ImageFlags) }
                                 $cmbSkuList.SelectedIndex = 0
                             }
 
@@ -1920,7 +1920,8 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
                 If (( $openImage.ImageArchitecture -ne "ARM" ) -and # No virtualization platform for ARM images
                     ( $openImage.ImageArchitecture -ne "ARM64" ) -and # No virtualization platform for ARM64 images
-                    ( $BcdInVhd -ne "NativeBoot" )) { # User asked for a non-bootable image
+                    ( $BcdInVhd -ne "NativeBoot" )) {
+                    # User asked for a non-bootable image
                     If (Test-Path -Path "$($systemDrive)\boot\bcd") {
                         Write-Verbose -Message "Image already has BIOS BCD store..."
                     }
@@ -2188,7 +2189,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                 }
                 Else {
                     Write-Verbose -Message "Closing $VhdFormat..."
-                    $DismountDiskImage = Dismount-DiskImage -ImagePath $VhdPath -PassThru
+                    $DismountDiskImage = Dismount-DiskImage -ImagePath $VhdPath
                 }
 
                 $vhdParentPath = Split-Path -Path $VhdPath -Parent
@@ -2226,14 +2227,14 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             Write-Verbose -Message ( [system.string]::Empty )
 
             # If we still have a WIM image open, close it.
-            If ($openWim -ne $null) {
+            If ($null -ne $openWim) {
                 Write-Verbose -Message "Closing Windows image..."
 
                 $openWim.Close()
             }
 
             # If we still have a registry hive mounted, dismount it.
-            If ($mountedHive -ne $null) {
+            If ($null -ne $mountedHive) {
                 Write-Verbose -Message "Closing registry hive..."
 
                 Dismount-RegistryHive -HiveMountPoint $mountedHive
@@ -2247,15 +2248,15 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     }
                 }
                 Else {
-                    $DismountDiskImage = Dismount-DiskImage -ImagePath $VhdPath -PassThru
+                    $DismountDiskImage = Dismount-DiskImage -ImagePath $VhdPath
                 }
             }
 
             # If we still have an ISO open, close it.
-            If ($openIso -ne $Null) {
+            If ($null -ne $openIso) {
                 Write-Verbose -Message "Closing ISO..."
 
-                $DismountDiskImage = Dismount-DiskImage -ImagePath $IsoPath -PassThru
+                $DismountDiskImage = Dismount-DiskImage -ImagePath $IsoPath
             }
 
             If (-not $CacheSource) {
