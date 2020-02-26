@@ -276,7 +276,7 @@ Convert-WindowsImage {
 
         [Parameter(ParameterSetName = "SRC")]
         [switch]
-        $ExpandOnNativeBoot = $false,
+        $ExpandOnNativeBoot = $true,
 
         [Parameter(ParameterSetName = "SRC")]
         [switch]
